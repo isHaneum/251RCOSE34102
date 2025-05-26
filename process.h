@@ -3,8 +3,7 @@
 
 #include <stdbool.h>
 
-#define MAX_PROCESSES 6
-#define ID_LEN        5
+#define ID_LEN        12
 
 /**
  * 프로세스 정보 구조체

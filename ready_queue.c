@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "process.h"  // Process.h에서 
 
-// ===== Ready Queue (Doubly Linked List) =====
+//Ready Queue (Doubly Linked List로 구현)
 typedef struct ReadyNode {
     Process* process;
     struct ReadyNode* prev;
@@ -25,7 +25,7 @@ bool is_ready_queue_empty(ReadyQueue* q) {
     return q->head == NULL;
 }
 
-// FCFS: 맨 뒤에 삽입
+// FCFS용 queue 맨 뒤에 삽입
 void ready_enqueue_fcfs(ReadyQueue* q, Process* p) {
     ReadyNode* node = (ReadyNode*)malloc(sizeof(ReadyNode));
     node->process = p;
@@ -40,7 +40,7 @@ void ready_enqueue_fcfs(ReadyQueue* q, Process* p) {
     q->tail = node;
 }
 
-// SJF: remaining_time 기준 오름차순 삽입
+// SJF용 remaining_time 기준 삽입
 void ready_enqueue_sjf(ReadyQueue* q, Process* p) {
     ReadyNode* node = (ReadyNode*)malloc(sizeof(ReadyNode));
     node->process = p;
@@ -95,8 +95,6 @@ void ready_enqueue_priority(ReadyQueue* q, Process* p) {
         cur->prev = node;
     }
 }
-
-// 맨 앞에서 제거하고 반환
 Process* ready_dequeue(ReadyQueue* q) {
     if (q->head == NULL) return NULL;
     ReadyNode* node = q->head;
@@ -108,8 +106,6 @@ Process* ready_dequeue(ReadyQueue* q) {
     free(node);
     return p;
 }
-
-// 큐에서 특정 프로세스 제거 (포인터 비교)
 bool ready_remove(ReadyQueue* q, Process* p) {
     ReadyNode* cur = q->head;
     while (cur) {
