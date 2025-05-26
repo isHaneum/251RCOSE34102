@@ -68,4 +68,3 @@ int main(int argc, char* argv[]) {
        alg_names[w_max], avg_waiting[w_max]);    */
     return 0;
     }
-

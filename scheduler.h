@@ -15,9 +15,9 @@ void schedule_fcfs(Process procs[], int n, int max_time);
 // time_quantum: 타임 퀀텀(ms)
 void schedule_rr(Process procs[], int n, int time_quantum, int max_time);
 
-void schedule_sjf(Process procs[], int n, int max_time);
+void schedule_sjf(Process procs[], int, int);
 
-void schedule_priority(Process procs[], int n, int max_time)
+void schedule_priority(Process procs[], int, int);
 
 
 #endif // SCHEDULER_H

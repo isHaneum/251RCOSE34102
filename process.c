@@ -4,38 +4,34 @@
 #include <string.h>
 #include <time.h>   // for rand()
 
-/**
- * 랜덤 프로세스 생성: 동적 할당 후 필드 초기화
- */
+// 랜덤 프로세스 생성: 동적 할당 후 필드 초기화
 Process* create_random_process(const char* id, int pid) {
-    Process* p = malloc(sizeof(Process));
+    Process* p = malloc(sizeof(Process)); //p에 동적 할당
     if (!p) {
         perror("malloc");
         exit(EXIT_FAILURE);
     }
-    memset(p, 0, sizeof(*p));
+    memset(p, 0, sizeof(*p)); 
 
     strncpy(p->id, id, ID_LEN-1);
     p->id[ID_LEN-1] = '\0';
 
-    p->arrival_time     = rand() % 10;         // 0~9
-    p->burst_time       = rand() % 8 + 2;      // 2~9
-    p->io_burst_time    = rand() % 3 + 2;      // 2~4
-    p->remaining_time   = p->burst_time;
-    p->priority         = rand() % 8;          // 0~7
-    p->executed_time    = 0;
-    p->total_executed   = 0;
-    p->io_complete_time = 0;
-    p->waiting_time     = 0;
-    p->turnaround_time  = 0;
-    p -> completed_time = 0;
+    p->arrival_time     = rand() % 20;         // 도착 시간 랜덤 0~19
+    p->burst_time       = rand() % 8 + 2;      // burst 시간 랜덤 2~9
+    p->io_burst_time    = rand() % 3 + 2;      // io burst 시간 랜덤 2~4
+    p->remaining_time   = p->burst_time;       // burst 후 남은 bursttime
+    p->priority         = rand() % 8;          // 우선 순위 랜덤 0~7 
+    p->executed_time    = 0;                   // 실행 종료된 시간
+    p->total_executed   = 0;                   // 얼마나 실행 됐는지?
+    p->io_complete_time = 0;                   // io 완료 시간
+    p->waiting_time     = 0;                   // waiting time == completed_time - arrival_time - burst_time
+    p->turnaround_time  = 0;                   // turnaround time == wating_time + burst_time
+    p -> completed_time = 0;                   // process 완료 시간
 
     return p;
 }
 
-/**
- * 프로세스 배열 생성
- */
+//processes 생성
 void create_processes(Process procs[], int n) {
     if (n > MAX_PROCESSES) n = MAX_PROCESSES;
     for (int i = 0; i < n; i++) {
@@ -47,9 +43,7 @@ void create_processes(Process procs[], int n) {
     }
 }
 
-/**
- * 프로세스 초기화
- */
+//process reset
 void init_processes(Process procs[], int n) {
     if (n > MAX_PROCESSES) n = MAX_PROCESSES;
     for (int i = 0; i < n; i++) {
@@ -62,17 +56,13 @@ void init_processes(Process procs[], int n) {
     }
 }
 
-/**
- * 단일 프로세스 정보 출력
- */
+//process 정보 print
 void print_process(const Process *p) {
     printf("ID=%s | arrival=%2d | burst=%2d | prio=%2d | io_burst=%2d\n",
-           p->id, p->arrival_time, p->burst_time, p->priority, p->io_burst_time);
+           p->id, p->arrival_time, p->burst_time, p->priority, p->io_burst_time);//5개만 출력
 }
 
-/**
- * 프로세스 배열 전체 정보 출력
- */
+//process 전부 출력
 void print_processes(const Process procs[], int n) {
     if (n > MAX_PROCESSES) n = MAX_PROCESSES;
     printf("=== Generated Processes ===\n");

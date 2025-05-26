@@ -26,6 +26,7 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
                 //printf("[Time %3d] %s arrived → Ready Queue\n", time, procs[i].id);
             }
         }
+        
         // I/O 완료 복귀
         Process* wp = waiting_peek(&wq);
         while (wp && wp->io_complete_time <= time) {
@@ -71,7 +72,10 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
 
             
         } else {
+
+            log_execution("IDLE", time, time + 1, false);
             time++;
+            continue;
         }
     }
 }
@@ -226,6 +230,8 @@ void schedule_priority(Process procs[], int n, int max_time) {
 
     while (completed < n && time < max_time) {
         // 도착 enqueue
+ 
+
         for (int i = 0; i < n; i++) {
             if (procs[i].arrival_time == time) {
                 ready_enqueue_priority(&rq, &procs[i]);
@@ -255,6 +261,7 @@ void schedule_priority(Process procs[], int n, int max_time) {
             running->executed_time++;
             running->total_executed++;
             time++;
+
             if (running->remaining_time == 0) {
                 running->completed_time = time;
                 //printf("[Time %3d] %s finished\n", time, running-> id);
@@ -274,9 +281,11 @@ void schedule_priority(Process procs[], int n, int max_time) {
             }
             // 완료 시
 
-        } else {
-            // idle
+        } 
+        else {
+            log_execution("IDLE", time, time + 1, false);
             time++;
+            continue;
         }
     }
 }
