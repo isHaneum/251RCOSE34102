@@ -3,14 +3,14 @@
 #include <stdbool.h>
 #include "process.h"  // Process.h에서 
 
-//Ready Queue (Doubly Linked List로 구현)
+//Ready Queue (Doubly Linked List)
 typedef struct ReadyNode {
     Process* process;
-    struct ReadyNode* prev;
-    struct ReadyNode* next;
+    struct ReadyNode* prev; // 이전 노드 포인터
+    struct ReadyNode* next; // 다음 노드 포인터
 } ReadyNode;
 
-typedef struct {
+typedef struct { // ReadyQueue struct
     ReadyNode* head;
     ReadyNode* tail;
 } ReadyQueue;
@@ -26,7 +26,7 @@ bool is_ready_queue_empty(ReadyQueue* q) {
 }
 
 // FCFS용 queue 맨 뒤에 삽입
-void ready_enqueue_fcfs(ReadyQueue* q, Process* p) {
+void ready_enqueue_fcfs(ReadyQueue* q, Process* p) {//온 순서대로 삽입
     ReadyNode* node = (ReadyNode*)malloc(sizeof(ReadyNode));
     node->process = p;
     node->prev = q->tail;
@@ -46,12 +46,12 @@ void ready_enqueue_sjf(ReadyQueue* q, Process* p) {
     node->process = p;
     node->prev = node->next = NULL;
 
-    if (q->head == NULL) {
+    if (q->head == NULL) {// 
         q->head = q->tail = node;
         return;
     }
     ReadyNode* cur = q->head;
-    while (cur && cur->process->remaining_time <= p->remaining_time) {
+    while (cur && cur->process->remaining_time <= p->remaining_time) {//remaining_time 기준 오름차
         cur = cur->next;
     }
     if (cur == NULL) {
@@ -95,6 +95,8 @@ void ready_enqueue_priority(ReadyQueue* q, Process* p) {
         cur->prev = node;
     }
 }
+
+
 Process* ready_dequeue(ReadyQueue* q) {
     if (q->head == NULL) return NULL;
     ReadyNode* node = q->head;
@@ -105,6 +107,7 @@ Process* ready_dequeue(ReadyQueue* q) {
     else q->tail = NULL;
     free(node);
     return p;
+
 }
 bool ready_remove(ReadyQueue* q, Process* p) {
     ReadyNode* cur = q->head;

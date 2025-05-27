@@ -4,7 +4,7 @@
 
 #define MAX_GANTT_ENTRIES 1024
 
-static GanttEntry gantt_log[MAX_GANTT_ENTRIES];
+static GanttEntry gantt_log[MAX_GANTT_ENTRIES];// 1024개만큼 gannt 저장장
 static int        gantt_idx = 0;
 
 void log_execution(const char* id, int start, int end, bool is_io) {
@@ -18,13 +18,17 @@ void log_execution(const char* id, int start, int end, bool is_io) {
 }
 
 void print_gantt_chart(void) {
+
     printf("\nGantt Chart:\n");
     for (int i = 0; i < gantt_idx; i++) {
         int dur = gantt_log[i].end_time - gantt_log[i].start_time;
-        if (gantt_log[i].is_io)
+        
+        if (gantt_log[i].is_io)//io발생시 뒤에 io 출력
             printf(" |%s(%d,io)", gantt_log[i].id, dur);
-        else if (strcmp(gantt_log[i].id, "IDLE") == 0)
+
+        else if (strcmp(gantt_log[i].id, "IDLE") == 0)// idle일때 idle 출력
             printf(" | idle(%d)", dur);
+
         else
             printf("|  %s(%d)  ", gantt_log[i].id, dur);
     }

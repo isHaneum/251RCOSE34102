@@ -9,7 +9,7 @@ typedef struct {
     int    start_time;
     int    end_time;
     bool   is_io;
-} GanttEntry;
+} GanttEntry;//gantt chart를 위한 구조체
 
 void log_execution(const char* id, int start, int end, bool is_io);
 void print_gantt_chart(void);

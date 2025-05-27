@@ -36,7 +36,7 @@ void ready_enqueue_priority(ReadyQueue* q, Process* p);
 // 맨 앞에서 제거하고 반환
 Process* ready_dequeue(ReadyQueue* q);
 
-// 큐에서 특정 프로세스 제거 (포인터 비교)
+// 큐에서 특정 프로세스 제거
 bool ready_remove(ReadyQueue* q, Process* p);
 
 #endif // READY_QUEUE_H
