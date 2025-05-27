@@ -12,8 +12,7 @@
 
 const char* alg_names[7] = {"NONE", "FCFS", "RR", "SJF", "PRIORITY", "PREEMPTIVE_SJF", "PREEMPTIVE_PRIORITY" };
 #define MAX_PROCESSES 10
-void set_schedule(Process procs[], int n){
-    //print_processes(procs, MAX_PROCESSES);
+void set_schedule(Process procs[], int n){// scheduling후 필요 작업
     print_gantt_chart();
     clear_gantt_log();
     init_processes(procs, n);
@@ -40,38 +39,49 @@ int main(int argc, char* argv[]) {
    int time_quantum = rand() % 9 + 2; //  // 2~10 랜덤 시간
 
    while(1){// 스케줄링 모드 선택 algorithm switch
-      printf("Scheduling Mode\n0. EXIT\t 1. FCFS\t 2. Round Robin\t 3. SJF\t 4. Priority\t 5. Preemptive SJF\t 6. Preemptive Priority\t 7. EVALUATION\n:");
+      printf("Scheduling Mode\n0. EXIT\t 1. FCFS\t 2. Round Robin\t 3. SJF\t 4. Priority\t 5. Preemptive SJF\t 6. Preemptive Priority\t 7. EVALUATION\t 8. MLQ\n:");
       scanf("%d", &schedule_mode);
       if (schedule_mode == 0) {
          printf("TERMINATED\n");
          break;
       }
-      if (schedule_mode < 0 || schedule_mode > 7) {
-         printf("Retype\n");
-         continue;
-      }
+
+      
       switch (schedule_mode) {
          case 1:
+            init_processes(procs, num_processes);
+            print_processes(procs, num_processes);
+
             schedule_fcfs(procs, num_processes, max_time);
             set_schedule(procs, num_processes);
             break;
          case 2:
+            print_processes(procs, num_processes);
+
             schedule_rr(procs, num_processes, time_quantum, max_time);
             set_schedule(procs, num_processes);
             break;
          case 3:
+            print_processes(procs, num_processes);
+
             schedule_sjf(procs, num_processes, max_time);
             set_schedule(procs, num_processes);
             break;
          case 4:
+            print_processes(procs, num_processes);
+
             schedule_priority(procs, num_processes, max_time);
             set_schedule(procs, num_processes);
             break;
          case 5:
+            print_processes(procs, num_processes);
+
             preemptive_sjf(procs, num_processes, max_time);
             set_schedule(procs, num_processes);
             break;
          case 6:
+            print_processes(procs, num_processes);
+
             preemptive_priority(procs, num_processes, max_time);
             set_schedule(procs, num_processes);
             break;
@@ -131,7 +141,7 @@ int main(int argc, char* argv[]) {
                best_wt_idx = 5;
             }
             init_processes(procs, num_processes);
-            preemptive_priority(procs, num_processes, time_quantum, max_time);
+            preemptive_priority(procs, num_processes, max_time);
             if (best_tt > average_turnaround_time(procs, num_processes)) {
                best_tt = average_turnaround_time(procs, num_processes);
                best_tt_idx = 6;
@@ -139,9 +149,17 @@ int main(int argc, char* argv[]) {
             if (best_wt > average_waiting_time(procs, num_processes)) {
                best_wt = average_waiting_time(procs, num_processes);
                best_wt_idx = 6;
+
             }
             printf("\nBest turnaround time: %2f ms --%s--\n", best_tt, alg_names[best_tt_idx]);
             printf("\nBest waiting time: %2f ms --%s--\n", best_wt, alg_names[best_wt_idx]);
+            init_processes(procs, num_processes);
+            clear_gantt_log();
+         case 8:
+            schedule_mlq(procs, num_processes, max_time);
+            printf("\nMultilevel Queue Scheduling\n");
+            clear_gantt_log();
+            init_processes(procs, num_processes);
             break;
          default:
             printf("Reenter\n");
