@@ -5,9 +5,7 @@
 
 #define ID_LEN        12
 
-/**
- * 프로세스 정보 구조체
- */
+//process 구조체
 typedef struct {
     char id[ID_LEN];
     int  arrival_time;
@@ -23,7 +21,7 @@ typedef struct {
     int  completed_time; // 완료 시간
 } Process;
 
-// 함수 원형 선언
+
 Process* create_random_process(const char* id, int pid);
 void     create_processes(Process procs[], int n);
 void     init_processes(Process procs[], int n);
