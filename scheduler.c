@@ -456,7 +456,7 @@ void preemptive_priority(Process procs[], int n, int max_time) {
 
             // Priority Preemption
 
-            }
+            
         } 
         else {
             idle_time++;
