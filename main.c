@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
             preemptive_sjf(procs, num_processes, max_time);
             set_schedule(procs, num_processes);
             break;
-         case 6:/pp
+         case 6://pp
             print_processes(procs, num_processes);
 
             preemptive_priority(procs, num_processes, max_time);
@@ -160,6 +160,7 @@ int main(int argc, char* argv[]) {
             printf("\nBest waiting time: %2f ms --%s--\n", best_wt, alg_names[best_wt_idx]);
             init_processes(procs, num_processes);
             clear_gantt_log();
+            break;
          case 8:
             schedule_mlq(procs, num_processes, max_time);
             printf("\nMultilevel Queue Scheduling\n");
