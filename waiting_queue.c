@@ -23,7 +23,7 @@ void waiting_enqueue(WaitingQueue* wq, Process* p) {
 }
 
 Process* waiting_peek(WaitingQueue* wq) {
-    return wq->front ? wq->front->p : NULL;
+    return wq->front ? wq->front->p : NULL;//안비었으면 맨 앞, 비었으면 NULL
 }
 
 //dequeue
