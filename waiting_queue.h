@@ -16,15 +16,13 @@ typedef struct {
     WNode* rear;
 } WaitingQueue;
 
+
 // 큐 초기화
 void init_waiting_queue(WaitingQueue* wq);
-
 // 대기 큐에 삽입
 void waiting_enqueue(WaitingQueue* wq, Process* p);
-
 // 대기 큐 맨 앞 프로세스 확인
 Process* waiting_peek(WaitingQueue* wq);
-
 // 대기 큐 맨 앞 프로세스 제거
 void waiting_dequeue(WaitingQueue* wq);
 
@@ -39,12 +37,10 @@ void waiting_dequeue(WaitingQueue* wq);
 #include "ready_queue.h"
 #include "waiting_queue.h"
 
-// FCFS 스케줄링 실행
-// max_time
+// FCFS
 void schedule_fcfs(Process procs[], int n, int max_time);
 
-// Round Robin 스케줄링 실행
-// time_quantum
+// Round Robin
 void schedule_rr(Process procs[], int n, int time_quantum, int max_time);
 
 #endif // SCHEDULER_H
