@@ -6,8 +6,8 @@
 //Ready Queue (Doubly Linked List)
 typedef struct ReadyNode {
     Process* process;
-    struct ReadyNode* prev; //이전 노드 포인터
-    struct ReadyNode* next; //다음 노드 포인터
+    struct ReadyNode* prev; //이전 노드
+    struct ReadyNode* next; //다음 노드
 } ReadyNode;
 
 typedef struct { // ReadyQueue struct
