@@ -14,7 +14,11 @@ void schedule_mlq(Process procs[], int n, int max_time) {
     init_ready_queue(&first_q);
     init_ready_queue(&second_q);
     init_ready_queue(&third_q);
-
+    printf("\n--Multilevel Queue Scheduling--\n");
+    printf("First Queue (RR = 4): Priority 0-2\n");
+    printf("Second Queue (FCFS): Priority 3-5\n");
+    printf("Third Queue (SJF): Priority 6-7\n");
+    
     int completed = 0;
     int time = 0;
     Process* running = NULL;
@@ -44,29 +48,32 @@ void schedule_mlq(Process procs[], int n, int max_time) {
             {
                 running = ready_dequeue(&first_q);
                 queue_num = 0;
+                tq_counter = 0;
+                segment_start = time;
             } 
             else if (!is_ready_queue_empty(&second_q)) 
             {
                 running = ready_dequeue(&second_q);
                 queue_num = 1;
+                segment_start = time;
                 
             } 
             else if (!is_ready_queue_empty(&third_q))
             {
                 running = ready_dequeue(&third_q);
                 queue_num = 2;
+                segment_start = time;
+
             }
 
             if (running) {
                 // 작업 시작
                 if (idle_time > 0) {
                     log_execution("IDLE", time - idle_time, time, false);
-                    idle_time = 0;
                 }
-                running->executed_time = 0;
-                segment_start = time;
-                tq_counter = 0;
-            } else
+                idle_time = 0; // idle 시간 초기화
+            } 
+            else
             {
                 // 모든 큐 비어있으면 idle 기록
                 idle_time++;
