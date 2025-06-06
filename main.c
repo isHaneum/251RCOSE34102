@@ -90,9 +90,12 @@ int main(int argc, char* argv[]) {
             set_schedule(procs, num_processes);
             break;
          case 7:
+         
             printf("\nEVALUATION\n");
             float best_wt = 100, best_tt = 100; 
             int best_wt_idx = 0, best_tt_idx = 0;
+            init_processes(procs, num_processes);
+
             schedule_fcfs(procs, num_processes, max_time);
             if (best_tt > average_turnaround_time(procs, num_processes))  {
                best_tt = average_turnaround_time(procs, num_processes);
@@ -113,6 +116,7 @@ int main(int argc, char* argv[]) {
                best_wt = average_waiting_time(procs, num_processes);
                best_wt_idx = 2;
             }
+
             init_processes(procs, num_processes);
             schedule_sjf(procs, num_processes, max_time);
             if (best_tt > average_turnaround_time(procs, num_processes)) {
@@ -123,6 +127,7 @@ int main(int argc, char* argv[]) {
                best_wt = average_waiting_time(procs, num_processes);
                best_wt_idx = 3;
             }
+
             init_processes(procs, num_processes);
             schedule_priority(procs, num_processes, max_time);
             if (best_tt > average_turnaround_time(procs, num_processes)) {
@@ -133,16 +138,19 @@ int main(int argc, char* argv[]) {
                best_wt = average_waiting_time(procs, num_processes);
                best_wt_idx = 4;
             }
+
             init_processes(procs, num_processes);
             preemptive_sjf(procs, num_processes, max_time);
             if (best_tt > average_turnaround_time(procs, num_processes)) {
                best_tt = average_turnaround_time(procs, num_processes);
+               
                best_tt_idx = 5;
             }
             if (best_wt > average_waiting_time(procs, num_processes)) {
                best_wt = average_waiting_time(procs, num_processes);
                best_wt_idx = 5;
             }
+
             init_processes(procs, num_processes);
             preemptive_priority(procs, num_processes, max_time);
             if (best_tt > average_turnaround_time(procs, num_processes)) {
@@ -152,7 +160,6 @@ int main(int argc, char* argv[]) {
             if (best_wt > average_waiting_time(procs, num_processes)) {
                best_wt = average_waiting_time(procs, num_processes);
                best_wt_idx = 6;
-
             }
             printf("\nBest turnaround time: %2f ms --%s--\n", best_tt, alg_names[best_tt_idx]);
             printf("\nBest waiting time: %2f ms --%s--\n", best_wt, alg_names[best_wt_idx]);

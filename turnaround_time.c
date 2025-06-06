@@ -7,11 +7,11 @@ static void calculate_turnaround_time(Process* p) {
 }
 
 static void calculate_waiting_time(Process* p) {
-    p->waiting_time += p->turnaround_time - p->burst_time - p->io_burst_count * p->io_burst_time; //
-    printf("\nio occurs %d times\n", p->io_burst_count);
+    p->waiting_time = p->turnaround_time - p->burst_time - p->io_burst_count * p->io_burst_time; //
     if (p->waiting_time < 0) {
         p->waiting_time = 0; // 음수일 경우 0으로 설정
     } 
+// io burst time을 제외한 waiting time
 }
 float average_turnaround_time(Process procs[], int n){
     float total_turnaround_time = 0;
@@ -20,6 +20,7 @@ float average_turnaround_time(Process procs[], int n){
         total_turnaround_time += procs[i].turnaround_time;
 
     }
+    printf("Average Turnaround Time: %.2f ms\n", total_turnaround_time / n);
     return (total_turnaround_time) / n;
 }
 float average_waiting_time(Process procs[], int n){
@@ -29,6 +30,7 @@ float average_waiting_time(Process procs[], int n){
         calculate_waiting_time(&procs[i]);
         total_waiting_time += procs[i].waiting_time;
     }
+    printf("Average Waiting Time: %.2f ms\n", total_waiting_time / n);
     return (total_waiting_time) / n;
 } 
 
