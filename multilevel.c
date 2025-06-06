@@ -20,13 +20,12 @@ void schedule_mlq(Process procs[], int n, int max_time) {
     Process* running = NULL;
     int segment_start = -1;
     int tq_counter = 0;
-    const int time_quantum = 4; // 첫 번째 큐의 시간 할당량
+    const int time_quantum = 4; // rr 4임의
     int queue_num = -1;
     int idle_time = 0; // idle 시간 추적
 
-    // 스케줄링 루프
     while (completed < n && time < max_time) {
-        // 도착 프로세스 큐 분류
+        // 분류
         for (int i = 0; i < n; i++) {
             if (procs[i].arrival_time == time) {
                 if (procs[i].priority < 3) {
@@ -39,15 +38,21 @@ void schedule_mlq(Process procs[], int n, int max_time) {
             }
         }
 
-        // CPU가 비어있을 때 프로세스 할당
+        // CPU 비어있을 때
         if (!running) {
-            if (!is_ready_queue_empty(&first_q)) {
+            if (!is_ready_queue_empty(&first_q)) 
+            {
                 running = ready_dequeue(&first_q);
                 queue_num = 0;
-            } else if (!is_ready_queue_empty(&second_q)) {
+            } 
+            else if (!is_ready_queue_empty(&second_q)) 
+            {
                 running = ready_dequeue(&second_q);
                 queue_num = 1;
-            } else if (!is_ready_queue_empty(&third_q)) {
+                
+            } 
+            else if (!is_ready_queue_empty(&third_q))
+            {
                 running = ready_dequeue(&third_q);
                 queue_num = 2;
             }
@@ -61,7 +66,8 @@ void schedule_mlq(Process procs[], int n, int max_time) {
                 running->executed_time = 0;
                 segment_start = time;
                 tq_counter = 0;
-            } else {
+            } else
+            {
                 // 모든 큐 비어있으면 idle 기록
                 idle_time++;
                 time++;
@@ -76,7 +82,7 @@ void schedule_mlq(Process procs[], int n, int max_time) {
         tq_counter++;
         time++;
 
-        // 종료 또는 RR quantum 만료 처리
+        // 종료 or rr = 0
 
 
         if ((running->remaining_time == 0) || (queue_num == 0 && tq_counter >= time_quantum && !is_ready_queue_empty(&first_q))) {
@@ -84,13 +90,14 @@ void schedule_mlq(Process procs[], int n, int max_time) {
             if ((running->remaining_time == 0)) {
                 running->completed_time = time;
                 completed++;
-            } else {
+            }
+            else 
+            {
                 ready_enqueue_fcfs(&first_q, running);
             }
             running = NULL;
             continue;
         }
-        // FCFS/SJF 큐는 연속 실행
     }
 
     // 결과 출력 및 정리

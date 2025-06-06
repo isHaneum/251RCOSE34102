@@ -6,11 +6,11 @@
 //Ready Queue (Doubly Linked List)
 typedef struct ReadyNode {
     Process* process;
-    struct ReadyNode* prev; // 이전 노드 포인터
-    struct ReadyNode* next; // 다음 노드 포인터
+    struct ReadyNode* prev; //이전 노드
+    struct ReadyNode* next; //다음 노드
 } ReadyNode;
 
-typedef struct { // ReadyQueue struct
+typedef struct { // Readyqueue struct
     ReadyNode* head;
     ReadyNode* tail;
 } ReadyQueue;
@@ -34,7 +34,8 @@ void ready_enqueue_fcfs(ReadyQueue* q, Process* p) {//온 순서대로 삽입
 
     if (q->tail) {
         q->tail->next = node;
-    } else {
+    } 
+    else {
         q->head = node;
     }
     q->tail = node;
@@ -42,6 +43,7 @@ void ready_enqueue_fcfs(ReadyQueue* q, Process* p) {//온 순서대로 삽입
 
 // SJF용 remaining_time 기준 삽입
 void ready_enqueue_sjf(ReadyQueue* q, Process* p) {
+    
     ReadyNode* node = (ReadyNode*)malloc(sizeof(ReadyNode));
     node->process = p;
     node->prev = node->next = NULL;
@@ -59,7 +61,9 @@ void ready_enqueue_sjf(ReadyQueue* q, Process* p) {
         node->prev = q->tail;
         q->tail->next = node;
         q->tail = node;
-    } else {
+        
+    } 
+    else {
         // 중간 또는 head 앞 삽입
         node->next = cur;
         node->prev = cur->prev;
@@ -79,7 +83,8 @@ void ready_enqueue_priority(ReadyQueue* q, Process* p) {
         q->head = q->tail = node;
         return;
     }
-    ReadyNode* cur = q->head;
+    
+    ReadyNode* cur = q->head;//current
     while (cur && cur->process->priority <= p->priority) {
         cur = cur->next;
     }
@@ -87,7 +92,9 @@ void ready_enqueue_priority(ReadyQueue* q, Process* p) {
         node->prev = q->tail;
         q->tail->next = node;
         q->tail = node;
-    } else {
+        
+    } 
+    else {
         node->next = cur;
         node->prev = cur->prev;
         if (cur->prev) cur->prev->next = node;
@@ -97,7 +104,7 @@ void ready_enqueue_priority(ReadyQueue* q, Process* p) {
 }
 
 
-Process* ready_dequeue(ReadyQueue* q) {
+Process* ready_dequeue(ReadyQueue* q) {//첫번째 process 빼기
     if (q->head == NULL) return NULL;
     ReadyNode* node = q->head;
     Process* p = node->process;
@@ -105,22 +112,8 @@ Process* ready_dequeue(ReadyQueue* q) {
     q->head = node->next;
     if (q->head) q->head->prev = NULL;
     else q->tail = NULL;
+    
     free(node);
     return p;
 
-}
-bool ready_remove(ReadyQueue* q, Process* p) {
-    ReadyNode* cur = q->head;
-    while (cur) {
-        if (cur->process == p) {
-            if (cur->prev) cur->prev->next = cur->next;
-            else q->head = cur->next;
-            if (cur->next) cur->next->prev = cur->prev;
-            else q->tail = cur->prev;
-            free(cur);
-            return true;
-        }
-        cur = cur->next;
-    }
-    return false;
 }

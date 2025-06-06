@@ -13,17 +13,17 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
     printf("\n--FCFS Scheduling--\n");
     ReadyQueue rq; init_ready_queue(&rq);
     WaitingQueue wq; init_waiting_queue(&wq);
-    int completed = 0;
-    int time = 0;
+    int completed = 0;//완료된 갯수
+    int time = 0;//cpu시간
     Process* running = NULL;
-    int segment_start = -1;
+    int segment_start = -1;// 임의 process 시작시간
     int idle_time = 0; // idle 시간 추적
     while (completed < n && time < max_time) {
         // 도착 프로세스 enqueue
         for (int i = 0; i < n; i++) {
             if (procs[i].arrival_time == time) {
                 ready_enqueue_fcfs(&rq, &procs[i]);
-            }
+            }//들어올때마다 확인해서 fcfs queue에 넣기
         }
         // I/O 완료 복귀
         Process* wp = waiting_peek(&wq);
@@ -43,13 +43,13 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
         // 실행 또는 idle
         if (running) {
             // 1ms 실행
-            if (idle_time > 0) {
+            if (idle_time > 0) {//이전에 idle 했었다면 gantt에 idle 추가, idletime 초기화
                 log_execution("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
             running->remaining_time--;
             running->executed_time++;
-            running->total_executed++;
+            running->total_executed++; //
             time++;
             // 완료 시
             if (running->remaining_time == 0) {
@@ -59,8 +59,8 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
                 running = NULL;
             }
             // I/O 요청 (2% 확률)
-            else if (running->executed_time >= 1 && rand() % 50 == 0) {
-                running->waiting_time -= running->io_burst_time; // waiting time 감소
+            else if (running->executed_time >= 1 && rand() % 25 == 0) { //1초라도 실행해야함
+                running->io_burst_count += 1; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
                 log_execution(running->id, segment_start, time, true);
@@ -70,7 +70,7 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
             }
 
         }    
-        else {
+        else {//할당이 안됐다면 idle
                 idle_time++;
                 time++;
                 continue;
@@ -89,6 +89,7 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
     int segment_start = -1;
     int tq_counter = 0;
     int idle_time = 0; // idle 시간 추적
+    
     while (completed < n && time < max_time) {
         // 도착 enqueue
         for (int i = 0; i < n; i++) {
@@ -96,6 +97,7 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
                 ready_enqueue_fcfs(&rq, &procs[i]);
             }
         }
+        
         // I/O 복귀
         Process* wp = waiting_peek(&wq);
         while (wp && wp->io_complete_time <= time) {
@@ -117,26 +119,31 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
             if (idle_time > 0) {
                 log_execution("IDLE", time - idle_time, time, false);
                 idle_time = 0;
+                
             }
+            
             running->remaining_time--;
             running->executed_time++;
             running->total_executed++;
             time++; 
             tq_counter++;
             // 완료 or time quantum 끝
-            if (running->remaining_time == 0 || tq_counter == time_quantum) {
+ if ((running->remaining_time == 0) || (tq_counter >= time_quantum && !is_ready_queue_empty(&rq))) {
+            log_execution(running->id, segment_start, time, false);
+            if ((running->remaining_time == 0)) {
                 running->completed_time = time;
-                bool io_flag = false;
-                log_execution(running->id, segment_start, time, io_flag);
-                if (running->remaining_time > 0) ready_enqueue_fcfs(&rq, running);
-                else completed++;
-                running = NULL;
-            // I/O 요청
-
+                completed++;
+            }
+            else 
+            {
+                ready_enqueue_fcfs(&rq, running);
+            }
+            running = NULL;
+            continue;
             }            
             else if (running->executed_time >= 1 && rand() % 50 == 0) {
 
-                running->waiting_time -= running->io_burst_time; // waiting time 감소
+                running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
                 log_execution(running->id, segment_start, time, true);
@@ -144,7 +151,6 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
                 running = NULL;
                 continue;
             }
-            // time quantum 소진 또는 완료
 
         } 
 
@@ -208,7 +214,7 @@ void schedule_sjf(Process procs[], int n, int max_time) {
             }
             // I/O
             else if (running->executed_time >= 1 && rand() % 50 == 0) {
-                running->waiting_time -= running->io_burst_time; // waiting time 감소
+                running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
                 log_execution(running->id, segment_start, time, true);
@@ -276,10 +282,10 @@ void schedule_priority(Process procs[], int n, int max_time) {
             }
             // I/O 요청
             else if (running->executed_time >= 1 && rand() % 50 == 0) {
-                running->waiting_time -= running->io_burst_time; // waiting time 감소
+                running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
-                log_execution(running->id, segment_start, time, true);
+                log_execution(running->id, segment_start, time, true);//io==true
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
@@ -304,7 +310,7 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
     Process* running = NULL;
     int segment_start = -1;
     int idle_time = 0;
-    
+
     while (completed < n && time < max_time) {
         // 도착 enqueue
         for (int i = 0; i < n; i++) {
@@ -319,6 +325,22 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
             waiting_dequeue(&wq);
             wp = waiting_peek(&wq);
         }
+
+        // SJF preemption
+        if (running) {
+            Process* next = ready_dequeue(&rq);
+            if (next && next->remaining_time < running->remaining_time) {
+                log_execution(running->id, segment_start, time, false);
+                ready_enqueue_sjf(&rq, running);
+                running = next;
+                running->executed_time = 0;
+                segment_start = time;
+            }
+            else if (next) {
+                ready_enqueue_sjf(&rq, next); // 다시 큐에 넣기
+            }
+        }
+
         // CPU 할당
         if (!running) {
             running = ready_dequeue(&rq);
@@ -327,7 +349,8 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
                 segment_start = time;
             }
         }
-        // 실행 또는 idle
+
+        // 실행 or idle
         if (running) {
             if (idle_time > 0) {
                 log_execution("IDLE", time - idle_time, time, false);
@@ -337,7 +360,7 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
             running->executed_time++;
             running->total_executed++;
             time++;
-            
+
             // 완료 시
             if (running->remaining_time == 0) {
                 running->completed_time = time;
@@ -347,29 +370,15 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
             } 
             // I/O 요청
             else if (running->executed_time >= 1 && rand() % 50 == 0) {
-                running->waiting_time -= running->io_burst_time; // waiting time 감소
+                
+                running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
+                
                 log_execution(running->id, segment_start, time, true);
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
-            }
-            // SJF를 위한 preemption
-            else {
-                Process* next = ready_dequeue(&rq);
-                if (next && next->remaining_time < running->remaining_time) {
-                    log_execution(running->id, segment_start, time, false);
-                    ready_enqueue_sjf(&rq, running);
-
-                    running = next;
-                    running->executed_time = 0;
-                    segment_start = time;
-
-                }
-                else if(next){
-                    ready_enqueue_sjf(&rq, next); // 다시 큐에 넣기
-                }
             }
         }
         else {
@@ -390,6 +399,7 @@ void preemptive_priority(Process procs[], int n, int max_time) {
     Process* running = NULL;
     int segment_start = -1;
     int idle_time = 0;
+    
     while (completed < n && time < max_time) {
         // 도착 enqueue
         for (int i = 0; i < n; i++) {
@@ -418,6 +428,19 @@ void preemptive_priority(Process procs[], int n, int max_time) {
                 log_execution("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
+            Process* next = ready_dequeue(&rq);
+            if (next && next->priority < running->priority) {
+                log_execution(running->id, segment_start, time, false);
+                ready_enqueue_priority(&rq, running);
+
+                running = next;
+                running->executed_time = 0;
+                segment_start = time;
+
+            }
+            else if (next) {
+            ready_enqueue_priority(&rq, next); // 다시 큐에 넣기
+            }
             running->remaining_time--;
             running->executed_time++;
             running->total_executed++;
@@ -431,7 +454,7 @@ void preemptive_priority(Process procs[], int n, int max_time) {
             }
             // I/O 요청
             else if (running->executed_time >= 1 && rand() % 50 == 0) {
-                running->waiting_time -= running->io_burst_time; // waiting time 감소
+                running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
                 log_execution(running->id, segment_start, time, true);
@@ -441,19 +464,8 @@ void preemptive_priority(Process procs[], int n, int max_time) {
             }
 
             // Priority Preemption
-            else {
-                Process* next = ready_dequeue(&rq);
-                if (next && next->priority < running->priority) {
-                    log_execution(running->id, segment_start, time, false);
-                    ready_enqueue_priority(&rq, running);
-                    running = next;
-                    running->executed_time = 0;
-                    segment_start = time;
-                }
-                else if (next) {
-                    ready_enqueue_priority(&rq, next); // 다시 큐에 넣기
-                }
-            }
+
+            
         } 
         else {
             idle_time++;
