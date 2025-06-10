@@ -44,7 +44,7 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
         if (running) {
             // 1ms 실행
             if (idle_time > 0) {//이전에 idle 했었다면 gantt에 idle 추가, idletime 초기화
-                log_execution("IDLE", time - idle_time, time, false);
+                log_store("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
             running->remaining_time--;
@@ -54,7 +54,7 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
             // 완료 시
             if (running->remaining_time == 0) {
                 running->completed_time = time;
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 completed++;
                 running = NULL;
             }
@@ -63,7 +63,7 @@ void schedule_fcfs(Process procs[], int n, int max_time) {
                 running->io_burst_count += 1; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
-                log_execution(running->id, segment_start, time, true);
+                log_store(running->id, segment_start, time, true);
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
@@ -117,7 +117,7 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
         // 실행 또는 idle
         if (running) {
             if (idle_time > 0) {
-                log_execution("IDLE", time - idle_time, time, false);
+                log_store("IDLE", time - idle_time, time, false);
                 idle_time = 0;
                 
             }
@@ -129,7 +129,7 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
             tq_counter++;
             // 완료 or time quantum 끝
  if ((running->remaining_time == 0) || (tq_counter >= time_quantum && !is_ready_queue_empty(&rq))) {
-            log_execution(running->id, segment_start, time, false);
+            log_store(running->id, segment_start, time, false);
             if ((running->remaining_time == 0)) {
                 running->completed_time = time;
                 completed++;
@@ -146,7 +146,7 @@ void schedule_rr(Process procs[], int n, int time_quantum, int max_time) {
                 running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
-                log_execution(running->id, segment_start, time, true);
+                log_store(running->id, segment_start, time, true);
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
@@ -198,7 +198,7 @@ void schedule_sjf(Process procs[], int n, int max_time) {
         // 실행 or idle
         if (running) {
             if (idle_time > 0) {
-                log_execution("IDLE", time - idle_time, time, false);
+                log_store("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
             running->remaining_time--;
@@ -208,7 +208,7 @@ void schedule_sjf(Process procs[], int n, int max_time) {
             if (running->remaining_time == 0) {
                 running->completed_time = time;
             
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 completed++;
                 running = NULL;
             }
@@ -217,7 +217,7 @@ void schedule_sjf(Process procs[], int n, int max_time) {
                 running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
-                log_execution(running->id, segment_start, time, true);
+                log_store(running->id, segment_start, time, true);
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
@@ -267,7 +267,7 @@ void schedule_priority(Process procs[], int n, int max_time) {
         // 실행 또는 idle
         if (running) {
             if (idle_time > 0) {
-                log_execution("IDLE", time - idle_time, time, false);
+                log_store("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
             running->remaining_time--;
@@ -276,7 +276,7 @@ void schedule_priority(Process procs[], int n, int max_time) {
             time++;
             if (running->remaining_time == 0) {
                 running->completed_time = time;
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 completed++;
                 running = NULL;
             }
@@ -285,7 +285,7 @@ void schedule_priority(Process procs[], int n, int max_time) {
                 running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
-                log_execution(running->id, segment_start, time, true);//io==true
+                log_store(running->id, segment_start, time, true);//io==true
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
@@ -330,7 +330,7 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
         if (running) {
             Process* next = ready_dequeue(&rq);
             if (next && next->remaining_time < running->remaining_time) {
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 ready_enqueue_sjf(&rq, running);
                 running = next;
                 running->executed_time = 0;
@@ -353,7 +353,7 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
         // 실행 or idle
         if (running) {
             if (idle_time > 0) {
-                log_execution("IDLE", time - idle_time, time, false);
+                log_store("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
             running->remaining_time--;
@@ -364,7 +364,7 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
             // 완료 시
             if (running->remaining_time == 0) {
                 running->completed_time = time;
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 completed++;
                 running = NULL;
             } 
@@ -375,7 +375,7 @@ void preemptive_sjf(Process procs[], int n, int max_time) {
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
                 
-                log_execution(running->id, segment_start, time, true);
+                log_store(running->id, segment_start, time, true);
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
@@ -425,12 +425,12 @@ void preemptive_priority(Process procs[], int n, int max_time) {
         // 실행 또는 idle
         if (running) {
             if (idle_time > 0) {
-                log_execution("IDLE", time - idle_time, time, false);
+                log_store("IDLE", time - idle_time, time, false);
                 idle_time = 0;
             }
             Process* next = ready_dequeue(&rq);
             if (next && next->priority < running->priority) {
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 ready_enqueue_priority(&rq, running);
 
                 running = next;
@@ -448,7 +448,7 @@ void preemptive_priority(Process procs[], int n, int max_time) {
 
             if (running->remaining_time == 0) {
                 running->completed_time = time;
-                log_execution(running->id, segment_start, time, false);
+                log_store(running->id, segment_start, time, false);
                 completed++;
                 running = NULL;
             }
@@ -457,7 +457,7 @@ void preemptive_priority(Process procs[], int n, int max_time) {
                 running->io_burst_count++; // io burst 횟수 증가
                 int io_burst = running->io_burst_time;
                 running->io_complete_time = time + io_burst;
-                log_execution(running->id, segment_start, time, true);
+                log_store(running->id, segment_start, time, true);
                 waiting_enqueue(&wq, running);
                 running = NULL;
                 continue;
