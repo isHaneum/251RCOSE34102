@@ -2,12 +2,12 @@
 #include <string.h>
 #include "gantt.h"
 
-#define MAX_GANTT_ENTRIES 1024
+#define MAX_GANTT_ENTRIES 1000
 
-static GanttEntry gantt_log[MAX_GANTT_ENTRIES];// 1024개만큼 gannt 저장장
+static GanttEntry gantt_log[MAX_GANTT_ENTRIES];// 1000개까지만
 static int        gantt_idx = 0;
 
-void log_execution(const char* id, int start, int end, bool is_io) {
+void log_store(const char* id, int start, int end, bool is_io) {//log 기록
     if (gantt_idx >= MAX_GANTT_ENTRIES) return;
     strncpy(gantt_log[gantt_idx].id, id, ID_LEN-1);
     gantt_log[gantt_idx].id[ID_LEN-1] = '\0';
@@ -17,7 +17,7 @@ void log_execution(const char* id, int start, int end, bool is_io) {
     gantt_idx++;
 }
 
-void print_gantt_chart(void) {
+void print_ganttchart(void) {
 
     printf("\nGantt Chart:\n");
     for (int i = 0; i < gantt_idx; i++) {
@@ -40,6 +40,6 @@ void print_gantt_chart(void) {
         printf("%d\n", gantt_log[gantt_idx - 1].end_time);
 }
 
-void clear_gantt_log(void) {
+void clear_ganttlog(void) {
     gantt_idx = 0;
 }
