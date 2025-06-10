@@ -20,16 +20,16 @@ typedef struct {
 // 초기화
 void init_ready_queue(ReadyQueue* q);
 
-// 빈큐 검사
+//
 bool is_ready_queue_empty(const ReadyQueue* q);
 
-// FCFS: 맨 뒤에 삽입
+//FCFS 맨 뒤에 삽입
 void ready_enqueue_fcfs(ReadyQueue* q, Process* p);
 
-// SJF: remaining_time 기준 오름차순 삽입
+//SJF remainingtime 기준 삽입
 void ready_enqueue_sjf(ReadyQueue* q, Process* p);
 
-//priority 기준 오름차순 삽입
+//priority 기준 삽입
 void ready_enqueue_priority(ReadyQueue* q, Process* p);
 
 
