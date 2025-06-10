@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>   // for rand()
 
-// 랜덤 프로세스 생성: 동적 할당 후 필드 초기화
+// 랜덤 프로세스 생성
 Process* create_random_process(const char* id, int pid) {
     Process* p = malloc(sizeof(Process)); //p에 동적 할당
     if (!p) {
