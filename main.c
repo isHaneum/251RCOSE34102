@@ -13,8 +13,8 @@
 const char* alg_names[7] = {"NONE", "FCFS", "RR", "SJF", "PRIORITY", "PREEMPTIVE_SJF", "PREEMPTIVE_PRIORITY" };
 #define MAX_PROCESSES 10
 void set_schedule(Process procs[], int n){// scheduling후 필요 작업
-    print_gantt_chart();//간트출력
-    clear_gantt_log();//간트차트 초기화
+    print_ganttchart();//간트출력
+    clear_ganttlog();//간트차트 초기화
     print_turnaround_time(procs, n);//turnaround 출력
     print_waiting_time(procs, n);//wating time 출력
     init_processes(procs, n);//프로세스 초기화
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
          case 7:
 
             printf("\nEVALUATION\n");
-            float best_wt = 100, best_tt = 100; 
+            float best_wt = 100, best_tt = 100; //100으로 설정 후 비교
             int best_wt_idx = 0, best_tt_idx = 0;
             init_processes(procs, num_processes);
 
