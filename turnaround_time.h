@@ -3,10 +3,10 @@
 
 #include "process.h"
 
-// 각 프로세스별 turnaround time 계산 및 출력
+// 프로세스 turnaroundtime 계산 
 void print_turnaround_time(Process procs[], int n);
 
-// 각 프로세스별 waiting time 계산 및 출력
+// 프로세스별 waitingtime 계산 및 출력
 void print_waiting_time(Process procs[], int n);
 float average_turnaround_time(Process procs[], int n);
 float average_waiting_time(Process procs[], int n);
