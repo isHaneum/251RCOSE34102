@@ -11,9 +11,9 @@ typedef struct {
     bool   is_io;
 } GanttEntry;//gantt chart를 위한 구조체
 
-void log_execution(const char* id, int start, int end, bool is_io);
-void print_gantt_chart(void);
-void clear_gantt_log(void);
+void log_store(const char* id, int start, int end, bool is_io);
+void print_ganttchart(void);
+void clear_ganttlog(void);
 
 
 #endif // GANTT_H
